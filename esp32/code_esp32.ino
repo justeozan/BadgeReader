@@ -6,19 +6,19 @@
 #define RST_PIN 2   // Broche de réinitialisation (RST) du lecteur RFID
 #define SS_PIN  6    // Broche SDA du lecteur RFID (pour ESP32)
 
-MFRC522 mfrc522(SS_PIN, RST_PIN);  // Crée un objet MFRC522
+MFRC522 mfrc522(SS_PIN, RST_PIN);
 
 const char *ssid = "Didine";
 const char *password = "hotspotDidine";
 const char *raspberryPiIP = "192.168.1.2";
 const int raspberryPiPort = 12345;
-IPAddress staticIP(192, 168, 1, 3);  // Remplacez par l'adresse IP statique que vous souhaitez
-IPAddress gateway(192, 168, 1, 1);     // Remplacez par l'adresse IP de la passerelle par défaut de votre réseau
-IPAddress subnet(255, 255, 255, 0);    // Remplacez par le masque de sous-réseau de votre réseau
-IPAddress dns(8, 8, 8, 8);             // Remplacez par l'adresse IP du serveur DNS
+IPAddress staticIP(192, 168, 1, 3);
+IPAddress gateway(192, 168, 1, 1);
+IPAddress subnet(255, 255, 255, 0);
+IPAddress dns(8, 8, 8, 8);
 
 void setup() {
-  Serial.begin(921600);  // Initialise la communication série
+  Serial.begin(921600);
   Serial.println("\nBienvenue");
   Wire.begin();
   SPI.begin();			
@@ -47,11 +47,9 @@ void loop() {
     Serial.print("Carte détectée avec UID : ");
     printUID(mfrc522.uid.uidByte, mfrc522.uid.size);
     Serial.println();
-
-    // Envoyer l'UID au serveur pour vérification
     sendDataToRaspberryPi(getUIDString(mfrc522.uid.uidByte, mfrc522.uid.size));
 
-    mfrc522.PICC_HaltA();  // Arrête la carte RFID
+    mfrc522.PICC_HaltA();
   }
 }
 
