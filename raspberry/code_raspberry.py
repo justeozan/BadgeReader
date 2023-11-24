@@ -1,21 +1,9 @@
 import socket
-#from pymongo import MongoClient
 import mysql.connector
 from mysql.connector import Error
 
-#client = MongoClient("mongodb://localhost:27017/")
-#database = client["bdd_uid"]
-#collection = database["uid_autorises"]
-
-
 HOST = '192.168.1.2'
 PORT = 12345
-
-#UID autorisé
-#authorized_uids = [
-#	'a3036999',
-#	'1499e362'
-#]
 i = 0
 
 def send_message(message):
@@ -27,11 +15,7 @@ def send_message(message):
 		s.sendall(message.encode())
 
 def is_uid_authorized(uid):
-	#result = collection.find_one({"uid": received_uid})
-	#return result is not None
-	#return uid in authorized_uids
 	try:
-		#connexion a la bdd
 		connection = mysql.connector.connect(
 			host='localhost',
 			database='bdd_uid',
@@ -71,10 +55,6 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 				i += 1
 			while True:
 				data = conn.recv(1024)
-				#if data:
-				#	print('Données reçues :', data.decode())
-				#if data == uid:
-				#	print('Ok')
 				if not data:
 					print('I will close the door')
 					break
@@ -83,11 +63,9 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
 				#Verif de l'acces
 				if is_uid_authorized(received_uid):
-					response = "Accés autorisé"
-					#send_message('1')
+					response = '1'
 				else:
-					response = "Acces refusé"
-					#send_message('0')
+					response = '0'
 
 				print('Reponse envoyés: ', response)
 				conn.sendall(response.encode())
