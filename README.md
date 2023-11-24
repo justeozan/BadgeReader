@@ -35,15 +35,5 @@ Ce projet vise à créer une solution de contrôle d'accès à base de badges RF
 3. Alimentez l'ESP32.
 4. Présentez un badge RFID au lecteur de l'ESP32.
 
-## Fonctionnalités supplémentaires
-
-- ...
-
-## Licence
-
-Ce projet est sous licence [MIT License](LICENSE).
-
----
-
 **Auteur:** Alix WILMART, Lucas FERRAND, Ethan PETIT-JEAN, Ozan SAHIN, Amandine VIALLE-GUERIN
 **Projet réalisé dans le cadre de:** Cours d'Hardware - GUARDIA 2
