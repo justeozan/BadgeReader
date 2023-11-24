@@ -3,27 +3,27 @@
 #include <SPI.h>
 #include <WiFi.h>
 
-#define RST_PIN 2
-#define SS_PIN  6
+#define RST_PIN 2   // Broche de réinitialisation (RST) du lecteur RFID
+#define SS_PIN  6    // Broche SDA du lecteur RFID (pour ESP32)
 
-MFRC522 mfrc522(SS_PIN, RST_PIN);
+MFRC522 mfrc522(SS_PIN, RST_PIN);  // Crée un objet MFRC522
 
 const char *ssid = "Didine";
 const char *password = "hotspotDidine";
 const char *raspberryPiIP = "192.168.1.2";
 const int raspberryPiPort = 12345;
-IPAddress staticIP(192, 168, 1, 3);
-IPAddress gateway(192, 168, 1, 1);
-IPAddress subnet(255, 255, 255, 0);
-IPAddress dns(8, 8, 8, 8);
+IPAddress staticIP(192, 168, 1, 3);  // Remplacez par l'adresse IP statique que vous souhaitez
+IPAddress gateway(192, 168, 1, 1);     // Remplacez par l'adresse IP de la passerelle par défaut de votre réseau
+IPAddress subnet(255, 255, 255, 0);    // Remplacez par le masque de sous-réseau de votre réseau
+IPAddress dns(8, 8, 8, 8);             // Remplacez par l'adresse IP du serveur DNS
 
 void setup() {
-  Serial.begin(921600);
+  Serial.begin(921600);  // Initialise la communication série
   Serial.println("\nBienvenue");
   Wire.begin();
-  SPI.begin();
-  mfrc522.PCD_Init();
-  delay(4);
+  SPI.begin();			
+  mfrc522.PCD_Init();		
+  delay(4);				
   mfrc522.PCD_DumpVersionToSerial();
   Serial.println(F("Scan PICC to see UID, SAK, type, and data blocks..."));
   pinMode(3, OUTPUT);
@@ -48,9 +48,10 @@ void loop() {
     printUID(mfrc522.uid.uidByte, mfrc522.uid.size);
     Serial.println();
 
+    // Envoyer l'UID au serveur pour vérification
     sendDataToRaspberryPi(getUIDString(mfrc522.uid.uidByte, mfrc522.uid.size));
 
-    mfrc522.PICC_HaltA();
+    mfrc522.PICC_HaltA();  // Arrête la carte RFID
   }
 }
 
@@ -92,20 +93,14 @@ void sendDataToRaspberryPi(String data) {
     client.print(data);
     client.println();
     String response = client.readString();
-    Serial.println("Response from Raspberry Pi: " + response);
-
-    if (response.indexOf("Access Granted") != -1) {
-      Serial.println("Accès autorisé !");
+    if (response == "1")
       digitalWrite(3, HIGH);
-    } else if (response.indexOf("Access Denied") != -1) {
-      Serial.println("Accès refusé !");
+    if (response == "0")
       digitalWrite(4, HIGH);
-    } else {
-      Serial.println("Réponse non reconnue");
-      digitalWrite(7, HIGH);
-    }
+    Serial.println("Response from Raspberry Pi: " + response);
+    digitalWrite(5, HIGH);
 
-    delay(1000);
+    delay(1000); // Attendre un moment avant de lire une nouvelle carte
     client.stop();
   } else {
     Serial.println("Failed to connect to Raspberry Pi");
